@@ -117,40 +117,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+  while (1)
+  {
+    /* USER CODE END WHILE */
 
-  // Shift register (74HC595D) is used to set the 7 segment LEDs
-  // Latch (12) Connected to D4/PB5
-  // Clock (11) Connected to D7/PA8
-  // Data (14) Connected to D8/PA9
-  TRISC.B0 = 0; // Set  DATA_pin as output pin
-TRISC.B1 = 0; // Set  CLCOK_pin as output pin
-TRISC.B2 = 0; // Set LATCH_pin as output pin
-while(1)
-{
-  send_data(0b00000000);
-  HAL_Delay(200);
-  send_data(0b10000000);
-  HAL_Delay(200);
-  send_data(0b01000000);
-  HAL_Delay(200);
-  send_data(0b00100000);
-  HAL_Delay(200);
-  send_data(0b00010000);
-  HAL_Delay(200);
-  send_data(0b00001000);
-  HAL_Delay(200);
-  send_data(0b00000100);
-  HAL_Delay(200);
-  send_data(0b00000010);
-  HAL_Delay(200);
-  send_data(0b00000001);
-  HAL_Delay(200);
-
-}
+    /* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
 }
 
