@@ -54,28 +54,26 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define DATA_pin PORTC.B1;
-#define LATCH_pin PORTC.B2;
-#define CLOCK_pin PORTC.B0;
 void clock_signal(void){
-   CLOCK_pin = 1;
-    delay_us(500);
-   CLOCK_pin = 0;
-    delay_us(500);
+	HAL_GPIO_WritePin(Clock_pin_GPIO_Port, Clock_pin_Pin, GPIO_PIN_SET);
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(Clock_pin_GPIO_Port, Clock_pin_Pin, GPIO_PIN_RESET);
+	HAL_Delay(1);
 }
 void latch_enable(void)
    {
-    LATCH_pin = 1;
-    delay_us(500);
-    LATCH_pin = 0;
+	HAL_GPIO_WritePin(Latch_pin__GPIO_Port, Latch_pin__Pin, GPIO_PIN_SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(Latch_pin__GPIO_Port, Latch_pin__Pin, GPIO_PIN_RESET);
     }
 void send_data(unsigned int data_out)
 {
     int i;
-    unsigned hold;
+    GPIO_PinState state;
     for (i=0 ; i<8 ; i++)
     {
-        DATA_pin = (data_out >> i) & (0x01);
+    	state = (data_out >> i) & (0x01);
+    	HAL_GPIO_WritePin(Data_pin_GPIO_Port, Data_pin_Pin, state);
         clock_signal();
     }
     latch_enable(); // Data finally submitted
@@ -117,8 +115,31 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  // Shift register (74HC595D) is used to set the 7 segment LEDs
+  // Latch (12) Connected to D4/PB5
+  // Clock (11) Connected to D7/PA8
+  // Data (14) Connected to D8/PA9
+
+while(1)
+{
+  send_data(0b00000000);
+  HAL_Delay(200);
+  send_data(0b10000000);
+  HAL_Delay(200);
+  send_data(0b01000000);
+  HAL_Delay(200);
+  send_data(0b00100000);
+  HAL_Delay(200);
+  send_data(0b00010000);
+  HAL_Delay(200);
+  send_data(0b00001000);
+  HAL_Delay(200);
+  send_data(0b00000100);
+  HAL_Delay(200);
+  send_data(0b00000010);
+  HAL_Delay(200);
+  send_data(0b00000001);
+  HAL_Delay(200);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
