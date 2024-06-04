@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+const uint8_t SEGMENT_MAP[] = {0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0X80,0X90};
+const uint8_t SEGMENT_SELECT[] = {0xF1,0xF2,0xF4,0xF8};
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,6 +79,25 @@ void send_data(unsigned int data_out)
     }
     latch_enable(); // Data finally submitted
 }
+
+void shift_out(unsigned int data_out)
+{
+    int i;
+    GPIO_PinState state;
+    for (i=7 ; i>=0 ; i--)
+    {
+    	state = (data_out >> i);
+    	state = state & (0x01);
+    	HAL_GPIO_WritePin(Data_pin_GPIO_Port, Data_pin_Pin, state);
+        clock_signal();
+    }
+}
+void write_number_to_segment(uint8_t segment, uint8_t value)
+{
+	shift_out(SEGMENT_MAP[value]);
+	shift_out(SEGMENT_SELECT[segment]);
+	latch_enable();// Data finally submitted
+}
 /* USER CODE END 0 */
 
 /**
@@ -122,24 +142,48 @@ int main(void)
 
 while(1)
 {
-  send_data(0b00000000);
-  HAL_Delay(200);
-  send_data(0b10000000);
-  HAL_Delay(200);
-  send_data(0b01000000);
-  HAL_Delay(200);
-  send_data(0b00100000);
-  HAL_Delay(200);
-  send_data(0b00010000);
-  HAL_Delay(200);
-  send_data(0b00001000);
-  HAL_Delay(200);
-  send_data(0b00000100);
-  HAL_Delay(200);
-  send_data(0b00000010);
-  HAL_Delay(200);
-  send_data(0b00000001);
-  HAL_Delay(200);
+	write_number_to_segment(0, 0);
+	HAL_Delay(1000);
+	write_number_to_segment(1, 1);
+	HAL_Delay(1000);
+	write_number_to_segment(2, 2);
+	HAL_Delay(1000);
+	write_number_to_segment(3, 3);
+	HAL_Delay(1000);
+//	 send_data(0b00000000);
+//	  HAL_Delay(1000);
+//	  send_data(0b10000000);
+//	  HAL_Delay(1000);
+//	  send_data(0b01000000);
+//	  HAL_Delay(1000);
+//	  send_data(0b00100000);
+//	  HAL_Delay(1000);
+//	  send_data(0b00010000);
+//	  HAL_Delay(1000);
+//	  send_data(0b00001000);
+//	  HAL_Delay(1000);
+//	  send_data(0b00000100);
+//	  HAL_Delay(1000);
+//	  send_data(0b00000010);
+//	  HAL_Delay(1000);
+//	  send_data(0b00000001);
+//	  HAL_Delay(3000);
+
+	// Shift Register 1: Qa, Qb, Qc, Qd segment selection
+	// Shift Register 2: Qa, Qb, Qc, Qd, Qe, Qf, Qg, Qh value
+	// 0b10000000 11111111
+
+//	  send_data(0xF1);
+////	  HAL_Delay(1000);
+//	  send_data(0b11111111);
+//	  latch_enable();
+//	  HAL_Delay(1000);
+//	  send_data(0xF2);
+////	  HAL_Delay(1000);
+//	  send_data(0b11001111);
+//	  latch_enable();
+//	  HAL_Delay(1000);
+//  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
